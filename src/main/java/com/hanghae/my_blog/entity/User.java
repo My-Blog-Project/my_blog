@@ -20,10 +20,10 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "VARCHAR(10)")
 	private String username;
 
-	@Column(nullable = false)
+	@Column(nullable = false,  columnDefinition = "VARCHAR(15)")
 	private String password;
 
 	@Column(nullable = false)
