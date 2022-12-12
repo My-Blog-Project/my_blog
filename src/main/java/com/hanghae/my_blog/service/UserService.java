@@ -1,6 +1,7 @@
 package com.hanghae.my_blog.service;
 
 import com.hanghae.my_blog.dto.CompleteResponseDto;
+import com.hanghae.my_blog.dto.ResponseDto;
 import com.hanghae.my_blog.dto.LoginRequestDto;
 import com.hanghae.my_blog.dto.SignupRequestDto;
 import com.hanghae.my_blog.entity.UserRoleEnum;
@@ -9,6 +10,7 @@ import com.hanghae.my_blog.jwt.JwtUtil;
 import com.hanghae.my_blog.repository.UserRepository;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,7 @@ public class UserService {
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional
-    public CompleteResponseDto signup(SignupRequestDto requestDto) {
+    public ResponseDto signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -44,7 +46,7 @@ public class UserService {
         User user = new User(username, password, role);
         userRepository.save(user);
 
-        return new CompleteResponseDto("회원가입 성공");
+        return new ResponseDto("회원가입 성공", HttpStatus.OK.value());
     }
 
 
