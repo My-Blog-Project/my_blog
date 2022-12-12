@@ -45,27 +45,27 @@ public class PostService {
     }
 
     // 포스트 수정
-    @Transactional
-    public PostUpdateResponseDto updatePost(Long id, PostRequestDto requestDto) {
-        Post post = checkPost(id);
-
-        post.update(requestDto);
-        postRepository.save(post);
-
-        return new PostUpdateResponseDto("포스트 수정 완료", HttpStatus.OK.value());
-    }
-
-
-    // 포스트 삭제
-    @Transactional
-    public PostDeleteResponseDto deletePost(Long id) {
-        Post post = checkPost(id);
-
-        postRepository.delete(post);
-
-        return new PostDeleteResponseDto("포스트 삭제 성공", HttpStatus.OK.value());
-
-    }
+//    @Transactional
+//    public PostUpdateResponseDto updatePost(Long id, PostRequestDto requestDto) {
+//        Post post = checkPost(id);
+//
+//        post.update(requestDto);
+//        postRepository.save(post);
+//
+//        return new PostUpdateResponseDto("포스트 수정 완료", HttpStatus.OK.value());
+//    }
+//
+//
+//    // 포스트 삭제
+//    @Transactional
+//    public PostDeleteResponseDto deletePost(Long id) {
+//        Post post = checkPost(id);
+//
+//        postRepository.delete(post);
+//
+//        return new PostDeleteResponseDto("포스트 삭제 성공", HttpStatus.OK.value());
+//
+//    }
 
     // 포스트 번호를 체크해서 번호가 없으면 에러메세지 출력
     private Post checkPost(Long id) {
