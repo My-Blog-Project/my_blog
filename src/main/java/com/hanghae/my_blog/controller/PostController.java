@@ -29,16 +29,16 @@ public class PostController {
     public PostCreateResponseDto createPost(@RequestBody PostRequestDto requestDto) {
         return postService.createPost(requestDto);
     }
-
-    // 게시글 수정
-    @PutMapping("/post/{id}")
-    public PostUpdateResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        return postService.updatePost(id, requestDto);
-    }
-
-    // 게시글 삭제
-    @DeleteMapping("/post/{id}")
-    public PostDeleteResponseDto deletePost(@PathVariable Long id) {
-        return postService.deletePost(id);
-    }
+//
+//    // 게시글 수정
+//    @PutMapping("/post/{id}")
+//    public PostUpdateResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
+//        return postService.updatePost(id, requestDto);
+//    }
+//
+//    // 게시글 삭제
+//    @DeleteMapping("/post/{id}")
+//    public PostDeleteResponseDto deletePost(@PathVariable Long id) {
+//        return postService.deletePost(id);
+//    }
 }
