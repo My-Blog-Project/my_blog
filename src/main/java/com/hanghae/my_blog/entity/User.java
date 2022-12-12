@@ -1,6 +1,5 @@
 package com.hanghae.my_blog.entity;
 
-import com.hanghae.my_blog.dto.UserRoleEnum;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,13 +21,13 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, columnDefinition = "VARCHAR(10)")
+	@Column(nullable = false,  unique = true, columnDefinition = "VARCHAR(10)")
 	private String username;
 
-	@Column(nullable = false,  columnDefinition = "VARCHAR(15)")
+	@Column(nullable = false)
 	private String password;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "VARCHAR(20)")
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
 
