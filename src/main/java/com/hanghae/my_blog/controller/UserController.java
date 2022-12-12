@@ -1,8 +1,10 @@
 package com.hanghae.my_blog.controller;
 
+import com.hanghae.my_blog.dto.LoginRequestDto;
 import com.hanghae.my_blog.dto.SignupRequestDto;
 import com.hanghae.my_blog.service.UserService;
 import com.hanghae.my_blog.dto.CompleteResponseDto;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,5 +17,10 @@ public class UserController {
     @PostMapping("/signup")
     public CompleteResponseDto signup(@RequestBody SignupRequestDto requestDto) {
         return userService.signup(requestDto);
+    }
+
+    @PostMapping("/login")
+    public CompleteResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        return userService.login(loginRequestDto, response);
     }
 }
