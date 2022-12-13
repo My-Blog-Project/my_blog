@@ -1,13 +1,7 @@
 package com.hanghae.my_blog.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +15,29 @@ public class PostLikes {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id", nullable = false)
 	private Post post;
 
+	@Column(nullable = false)
+	private boolean likeCheck;
+
+
+	public PostLikes(User user, Post post) {
+		this.user = user;
+		this.post = post;
+		this.likeCheck = true;
+	}
+
+	public void likeCancle() {
+		this.likeCheck=false;
+	}
+
+	public void likepost() {
+		this.likeCheck = true;
+	}
 }
