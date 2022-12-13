@@ -1,13 +1,7 @@
 package com.hanghae.my_blog.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +14,25 @@ public class CommentLikes {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "comment_id", nullable = false)
 	private Comment comment;
+
+	@Column(nullable = false)
+	private boolean likeCheck;
+
+
+	public CommentLikes(User user, Comment comment) {
+		this.user=user;
+		this.comment=comment;
+		this.likeCheck=true;
+	}
+
+	public void likeCancle() { this.likeCheck=false; }
+	public void likeComment() { this.likeCheck=true; }
 
 }

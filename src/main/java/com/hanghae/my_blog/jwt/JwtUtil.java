@@ -73,13 +73,16 @@ public class JwtUtil {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
-		} catch (SecurityException | MalformedJwtException | UnsupportedJwtException e) {
-			log.info("Invalid JWT Token, 토큰이 유효하지 않습니다.");
-			throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
+		} catch (SecurityException | MalformedJwtException e) {
+			log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
 		} catch (ExpiredJwtException e) {
-			log.info("Expired JWT Token, 만료된 JWT token 입니다.");
-			throw new IllegalArgumentException("만료된 토큰입니다.");
+			log.info("Expired JWT token, 만료된 JWT token 입니다.");
+		} catch (UnsupportedJwtException e) {
+			log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+		} catch (IllegalArgumentException e) {
+			log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
 		}
+		throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
 	}
 
 	//사용자 정보 가져오기

@@ -13,6 +13,7 @@ public class PostResponseDto {
     private String title;
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
+//    private Long likeCount;           postlikeCount
 
     public PostResponseDto(Post post) {
         this.num = post.getId();
