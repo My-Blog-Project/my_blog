@@ -29,11 +29,11 @@ public class CommentService {
 
     @Transactional
     //댓글 저장하기
-    public CommentResponseDto saveComment(Long postid, CommentRequestDto commentRequestDto, HttpServletRequest request) {
+    public CommentResponseDto saveComment(Long postId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
         //로그인 여부 확인
         User user = tokenChecking(request);
         //게시글 저장 여부 확인
-        Post post = postRepository.findById(postid).orElseThrow(
+        Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다")
         );
         //댓글 저장
@@ -42,18 +42,18 @@ public class CommentService {
         return new CommentResponseDto(comment.getContent());
     }
     @Transactional
-    public CommentResponseDto updateComment(Long postid, Long commentid, CommentRequestDto commentRequestDto, HttpServletRequest request) {
+    public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
         //로그인 여부 확인
         User user = tokenChecking(request);
         //게시글 존재 여부 확인
-        postRepository.findById(postid).orElseThrow(
-                () -> new IllegalArgumentException(("게시글이 존재하지 않습니다")
-        ));
+        if(!postRepository.existsById(postId)){
+            throw new IllegalArgumentException("게시글이 존재하지 않습니다");
+        }
         //댓글 존재 여부 확인
-        Comment comment = commentRepository.findById(commentid).orElseThrow(
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException(("댓글이 존재하지 않습니다")
         ));
-        //ADMIN 권한 또는 username 확인 후 댓글 업데이트
+        //ADMIN 권한, username 확인 후 댓글 업데이트
         if(comment.getUser().getUsername().equals(user.getUsername()) || user.getRole() == UserRoleEnum.ADMIN){
         comment.update(commentRequestDto);
         }else{
@@ -64,18 +64,18 @@ public class CommentService {
     }
     @Transactional
     //댓글 삭제하기
-    public CompleteResponseDto deleteComment(Long postid, Long commentid, HttpServletRequest request) {
+    public CompleteResponseDto deleteComment(Long postId, Long commentId, HttpServletRequest request) {
         //로그인 여부 확인
         User user = tokenChecking(request);
         //게시글 저장 여부 확인
-        postRepository.findById(postid).orElseThrow(
-                () -> new IllegalArgumentException(("게시글이 존재하지 않습니다")
-        ));
+        if(!postRepository.existsById(postId)){
+            throw new IllegalArgumentException("게시글이 존재하지 않습니다");
+        }
         //댓글 저장 여부 확인
-        Comment comment = commentRepository.findById(commentid).orElseThrow(
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException(("댓글이 존재하지 않습니다")
         ));
-        //ADMIN 권한 또는 username 확인 후 댓글 삭제
+        //ADMIN 권한, username 확인 후 댓글 삭제
         if(comment.getUser().getUsername().equals(user.getUsername()) || user.getRole() == UserRoleEnum.ADMIN){
             commentRepository.delete(comment);
         }else{
