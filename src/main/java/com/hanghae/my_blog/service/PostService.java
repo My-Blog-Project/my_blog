@@ -1,12 +1,12 @@
 package com.hanghae.my_blog.service;
 
 import com.hanghae.my_blog.dto.*;
+import com.hanghae.my_blog.entity.Comment;
 import com.hanghae.my_blog.entity.Post;
 import com.hanghae.my_blog.entity.User;
-import com.hanghae.my_blog.jwt.JwtUtil;
+import com.hanghae.my_blog.repository.CommentRepository;
 import com.hanghae.my_blog.repository.PostRepository;
-import com.hanghae.my_blog.repository.UserRepository;
-import io.jsonwebtoken.Claims;
+import com.hanghae.my_blog.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,8 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final CommentRepository commentRepository;
+    private final UserUtil userUtil;
 
     // 전체 포스트 가져오기
     @Transactional(readOnly = true)
@@ -29,7 +29,12 @@ public class PostService {
 
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         for(Post post : posts) {
-            postAllShowResponseDto.addPost(new PostResponseDto(post));
+            CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
+            List<Comment> comments = commentRepository.findByPost_IdOrderByCreatedAtDesc(post.getId());
+            for(Comment comment : comments) {
+                commentListRequestDto.addComment(new CommentResponseDto(comment));
+            }
+            postAllShowResponseDto.addPost(new PostResponseDto(post, commentListRequestDto));
         }
 
         return postAllShowResponseDto;
@@ -40,14 +45,21 @@ public class PostService {
     public PostShowResponseDto getPost(Long id) {
         Post post = checkPost(id);
 
-        return new PostShowResponseDto(post);
+        CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
+        List<Comment> comments = commentRepository.findByPost_IdOrderByCreatedAtDesc(post.getId());
+        for(Comment comment : comments) {
+            commentListRequestDto.addComment(new CommentResponseDto(comment));
+        }
+
+        return new PostShowResponseDto(post, commentListRequestDto);
     }
 
     // 포스트 생성
+    @Transactional
     public PostCreateResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
-        User user = userTokenCheck(request);
+        User user = userUtil.getUserInfo(request);
+        Post post = new Post(requestDto, user);
 
-        Post post = new Post(requestDto);
         postRepository.save(post); // 자동으로 쿼리가 생성되면서 데이터베이스에 연결되며 저장된다.
 
         return new PostCreateResponseDto(post);
@@ -55,8 +67,9 @@ public class PostService {
 
     // 포스트 수정
     @Transactional
-    public ResponseDto updatePost(Long id, PostRequestDto requestDto) {
+    public ResponseDto updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
         Post post = checkPost(id);
+        userUtil.getUserInfo(request);
 
         post.update(requestDto);
         postRepository.save(post);
@@ -67,8 +80,9 @@ public class PostService {
 
     // 포스트 삭제
     @Transactional
-    public ResponseDto deletePost(Long id) {
+    public ResponseDto deletePost(Long id, HttpServletRequest request) {
         Post post = checkPost(id);
+        userUtil.getUserInfo(request);
 
         postRepository.delete(post);
 
@@ -83,28 +97,5 @@ public class PostService {
         );
     }
 
-    private User userTokenCheck(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if(token != null) {
-            if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            String username = claims.getSubject();
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            User user = userRepository.findByUsername(username).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-
-            return user;
-        }
-        throw new IllegalArgumentException("Token Error");
-
-    }
 
 }

@@ -37,7 +37,7 @@ public class CommentService {
         //댓글 저장
         Comment comment = new Comment(commentRequestDto,  post, user);
         commentRepository.save(comment);
-        return new CommentResponseDto(comment.getContent());
+        return new CommentResponseDto(comment);
     }
     @Transactional
     public CommentResponseDto updateComment(Long postid, Long commentid, CommentRequestDto commentRequestDto, HttpServletRequest request) {
@@ -54,7 +54,7 @@ public class CommentService {
         //댓글 업데이트
         comment.update(commentRequestDto);
         //수정된 댓글 반환
-        return new CommentResponseDto(comment.getContent());
+        return new CommentResponseDto(comment);
     }
     //댓글 삭제하기
     public CompleteResponseDto deleteComment(Long postid, Long commentid, HttpServletRequest request) {

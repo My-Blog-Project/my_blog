@@ -3,6 +3,7 @@ package com.hanghae.my_blog.dto;
 import com.hanghae.my_blog.entity.Post;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
