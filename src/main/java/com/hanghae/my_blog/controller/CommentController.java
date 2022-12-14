@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/comment")
@@ -18,12 +19,12 @@ public class CommentController {
 
     //댓글 생성
     @PostMapping("/{postid}")
-    public CommentResponseDto saveComment(@PathVariable Long postid, @RequestBody CommentRequestDto commentRequsetDto, HttpServletRequest httpServletRequest){
+    public CommentResponseDto saveComment(@PathVariable Long postid, @Valid @RequestBody CommentRequestDto commentRequsetDto, HttpServletRequest httpServletRequest){
         return commentService.saveComment(postid, commentRequsetDto, httpServletRequest);
     }
     //댓글 수정
     @PutMapping("/{postid}/{commentid}")
-    public CommentResponseDto updateComment(@PathVariable Long postid, @PathVariable Long commentid, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest){
+    public CommentResponseDto updateComment(@PathVariable Long postid, @PathVariable Long commentid, @Valid @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest){
         return commentService.updateComment(postid, commentid, commentRequestDto, httpServletRequest);
     }
     //댓글 삭제
