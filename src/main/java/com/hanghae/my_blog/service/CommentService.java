@@ -8,6 +8,7 @@ import com.hanghae.my_blog.entity.Post;
 import com.hanghae.my_blog.entity.User;
 import com.hanghae.my_blog.entity.UserRoleEnum;
 import com.hanghae.my_blog.jwt.JwtUtil;
+import com.hanghae.my_blog.repository.CommentLikesRepository;
 import com.hanghae.my_blog.repository.CommentRepository;
 import com.hanghae.my_blog.repository.PostRepository;
 import com.hanghae.my_blog.repository.UserRepository;
@@ -28,6 +29,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final UserUtil userUtil;
+    private final CommentLikesRepository commentLikesRepository;
 
     @Transactional
     //댓글 저장하기
@@ -61,8 +63,9 @@ public class CommentService {
         }else{
             throw new IllegalArgumentException("올바른 사용자가 아닙니다");
         }
+        Long commentCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
         //수정된 댓글 반환
-        return new CommentResponseDto(comment);
+        return new CommentResponseDto(comment, commentCnt);
     }
     @Transactional
     //댓글 삭제하기

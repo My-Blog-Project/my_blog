@@ -15,6 +15,7 @@ public class PostShowResponseDto {
     private String title;
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
+    private Long likeCount;
     private List<CommentResponseDto> commentList = new ArrayList<>();
 
     public PostShowResponseDto(Post post) {
@@ -26,13 +27,14 @@ public class PostShowResponseDto {
         this.modifiedAt = post.getModifiedAt();
     }
 
-    public PostShowResponseDto(Post post, CommentListResponseDto commentList) {
+    public PostShowResponseDto(Post post, CommentListResponseDto commentList, Long postLikeCnt) {
         this.num = post.getId();
         this.username = post.getUser().getUsername();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
+        this.likeCount = postLikeCnt;
         this.commentList = commentList.getCommentList();
     }
 }

@@ -16,14 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 public class LikeController {
     private final LikeService likeService;
 
-    @PostMapping("/postlike/{id}")
-    public CompleteResponseDto likePost(@PathVariable Long id, HttpServletRequest request) {
-        return likeService.likePost(id, request);
+    @PostMapping("/post/{postId}/like")
+    public CompleteResponseDto likePost(@PathVariable Long postId, HttpServletRequest request) {
+        return likeService.likePost(postId, request);
     }
 
-    @PostMapping ("/commentlike/{id}")
-    public CompleteResponseDto likeComment(@PathVariable Long id, HttpServletRequest request) {
-        return likeService.likeComment(id, request);
+    @PostMapping ("/comment/{commentId}/like")
+    public CompleteResponseDto likeComment(@PathVariable Long commentId, HttpServletRequest request) {
+        return likeService.likeComment(commentId, request);
     }
 
 }
