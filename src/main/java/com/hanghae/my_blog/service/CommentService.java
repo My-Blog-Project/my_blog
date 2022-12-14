@@ -7,6 +7,7 @@ import com.hanghae.my_blog.entity.Comment;
 import com.hanghae.my_blog.entity.Post;
 import com.hanghae.my_blog.entity.User;
 import com.hanghae.my_blog.jwt.JwtUtil;
+import com.hanghae.my_blog.repository.CommentLikesRepository;
 import com.hanghae.my_blog.repository.CommentRepository;
 import com.hanghae.my_blog.repository.PostRepository;
 import com.hanghae.my_blog.repository.UserRepository;
@@ -25,6 +26,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final CommentLikesRepository commentLikesRepository;
 
     //댓글 저장하기
     public CommentResponseDto saveComment(Long postid, CommentRequestDto commentRequestDto, HttpServletRequest request) {
@@ -53,8 +55,9 @@ public class CommentService {
         ));
         //댓글 업데이트
         comment.update(commentRequestDto);
+        Long commentCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
         //수정된 댓글 반환
-        return new CommentResponseDto(comment);
+        return new CommentResponseDto(comment, commentCnt);
     }
     //댓글 삭제하기
     public CompleteResponseDto deleteComment(Long postid, Long commentid, HttpServletRequest request) {

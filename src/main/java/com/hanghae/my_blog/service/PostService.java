@@ -4,11 +4,12 @@ import com.hanghae.my_blog.dto.*;
 import com.hanghae.my_blog.entity.Comment;
 import com.hanghae.my_blog.entity.Post;
 import com.hanghae.my_blog.entity.User;
+import com.hanghae.my_blog.repository.CommentLikesRepository;
 import com.hanghae.my_blog.repository.CommentRepository;
+import com.hanghae.my_blog.repository.PostLikesRepository;
 import com.hanghae.my_blog.repository.PostRepository;
 import com.hanghae.my_blog.util.UserUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,8 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final PostLikesRepository postLikesRepository;
+    private final CommentLikesRepository commentLikesRepository;
     private final UserUtil userUtil;
 
     // 전체 포스트 가져오기
@@ -29,12 +32,16 @@ public class PostService {
 
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         for(Post post : posts) {
+            // 게시글 좋아요 count
+            Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
             CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
             List<Comment> comments = commentRepository.findByPost_IdOrderByCreatedAtDesc(post.getId());
             for(Comment comment : comments) {
-                commentListRequestDto.addComment(new CommentResponseDto(comment));
+                // 댓글 좋아요 count
+                Long commentLikeCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
+                commentListRequestDto.addComment(new CommentResponseDto(comment, commentLikeCnt));
             }
-            postAllShowResponseDto.addPost(new PostResponseDto(post, commentListRequestDto));
+            postAllShowResponseDto.addPost(new PostResponseDto(post, commentListRequestDto, postLikeCnt));
         }
 
         return postAllShowResponseDto;
@@ -44,14 +51,15 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostShowResponseDto getPost(Long id) {
         Post post = checkPost(id);
-
+        Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
         CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
         List<Comment> comments = commentRepository.findByPost_IdOrderByCreatedAtDesc(post.getId());
         for(Comment comment : comments) {
-            commentListRequestDto.addComment(new CommentResponseDto(comment));
+            Long commentLikeCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
+            commentListRequestDto.addComment(new CommentResponseDto(comment, commentLikeCnt));
         }
 
-        return new PostShowResponseDto(post, commentListRequestDto);
+        return new PostShowResponseDto(post, commentListRequestDto, postLikeCnt);
     }
 
     // 포스트 생성
@@ -67,33 +75,33 @@ public class PostService {
 
     // 포스트 수정
     @Transactional
-    public ResponseDto updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+    public CompleteResponseDto updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
         Post post = checkPost(id);
         userUtil.getUserInfo(request);
 
         post.update(requestDto);
         postRepository.save(post);
 
-        return new ResponseDto("포스트 수정 완료", HttpStatus.OK.value());
+        return new CompleteResponseDto("포스트 수정 완료");
     }
 
 
     // 포스트 삭제
     @Transactional
-    public ResponseDto deletePost(Long id, HttpServletRequest request) {
+    public CompleteResponseDto deletePost(Long id, HttpServletRequest request) {
         Post post = checkPost(id);
         userUtil.getUserInfo(request);
 
         postRepository.delete(post);
 
-        return new ResponseDto("포스트 삭제 성공", HttpStatus.OK.value());
+        return new CompleteResponseDto("포스트 삭제 성공");
 
     }
 
     // 포스트 번호를 체크해서 번호가 없으면 에러메세지 출력
     private Post checkPost(Long id) {
         return postRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("포스트가 존재하지 않습니다.")
+                () -> new IllegalArgumentException("포스트가 존재하지 않습니다.")
         );
     }
 
