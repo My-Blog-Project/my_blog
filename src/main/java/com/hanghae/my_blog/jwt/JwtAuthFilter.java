@@ -28,34 +28,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		String token = jwtUtil.resolveToken(request);
 
-		if (token != null) {
-			if (!jwtUtil.validateToken(token)) {
-				jwtExceptionHandler(response, "유효한 토큰이 아닙니다.", HttpStatus.BAD_REQUEST.value());
-				return;
-			}
-			Claims info = jwtUtil.getUserInfoFromToken(token);
-			setAuthentication(info.getSubject());   //username
+		if (token != null && jwtUtil.validateToken(token)) {   // token 검증
+			Authentication auth = jwtUtil.getAuthentication(token);    // 인증 객체 생성
+			SecurityContextHolder.getContext().setAuthentication(auth); // SecurityContextHolder에 인증 객체 저장
 		}
 		filterChain.doFilter(request, response);
-	}
-
-	public void setAuthentication(String username) {
-		SecurityContext context = SecurityContextHolder.createEmptyContext();
-		Authentication authentication = jwtUtil.createAuthentication(username);
-		context.setAuthentication(authentication);
-
-		SecurityContextHolder.setContext(context);
-	}
-
-	public void jwtExceptionHandler(HttpServletResponse response, String msg, int statusCode) {
-		response.setStatus(statusCode);
-		response.setContentType("application/json");
-		try {
-			String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(msg, statusCode));
-			response.getWriter().write(json);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
 	}
 
 }
