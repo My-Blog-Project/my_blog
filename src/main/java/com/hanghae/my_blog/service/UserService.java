@@ -1,7 +1,6 @@
 package com.hanghae.my_blog.service;
 
 import com.hanghae.my_blog.dto.CompleteResponseDto;
-import com.hanghae.my_blog.dto.ResponseDto;
 import com.hanghae.my_blog.dto.LoginRequestDto;
 import com.hanghae.my_blog.dto.SignupRequestDto;
 import com.hanghae.my_blog.entity.UserRoleEnum;
@@ -10,12 +9,11 @@ import com.hanghae.my_blog.jwt.JwtUtil;
 import com.hanghae.my_blog.repository.UserRepository;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,21 +21,23 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
+    @Value("${admin.secret.token}")
+    private String admin_token;
 
     @Transactional
-    public ResponseDto signup(SignupRequestDto requestDto) {
+    public CompleteResponseDto signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        Optional<User> byUsername = userRepository.findByUsername(username);
-        if (byUsername.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+        boolean isExistUsername = userRepository.existsByUsername(username);
+        if (isExistUsername) {
+            throw new IllegalArgumentException("이미 존재하는 ID입니다.");
         }
 
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()){
-            if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+            if (!requestDto.getAdminToken().equals(admin_token)) {
                 throw new IllegalArgumentException("관리자 토큰값이 일치하지 않습니다.");
             }
             role = UserRoleEnum.ADMIN;
@@ -46,7 +46,7 @@ public class UserService {
         User user = new User(username, password, role);
         userRepository.save(user);
 
-        return new ResponseDto("회원가입 성공", HttpStatus.OK.value());
+        return new CompleteResponseDto("회원가입 성공");
     }
 
 
