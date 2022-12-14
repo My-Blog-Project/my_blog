@@ -41,7 +41,7 @@ public class CommentService {
         //댓글 저장
         Comment comment = new Comment(commentRequestDto,  post, user);
         commentRepository.save(comment);
-        return new CommentResponseDto(comment.getContent());
+        return new CommentResponseDto(comment);
     }
     @Transactional
     public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest) {
@@ -62,7 +62,7 @@ public class CommentService {
             throw new IllegalArgumentException("올바른 사용자가 아닙니다");
         }
         //수정된 댓글 반환
-        return new CommentResponseDto(comment.getContent());
+        return new CommentResponseDto(comment);
     }
     @Transactional
     //댓글 삭제하기

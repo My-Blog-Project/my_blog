@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserUtil {
-
 	private final JwtUtil jwtUtil;
 	private final UserRepository userRepository;
 

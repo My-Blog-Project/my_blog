@@ -17,7 +17,7 @@ public class CommentController {
     private final CommentService commentService;
 
     //댓글 생성
-    @PostMapping("/{postid}/comment")
+    @PostMapping("/{postid}")
     public CommentResponseDto saveComment(@PathVariable Long postid, @RequestBody CommentRequestDto commentRequsetDto, HttpServletRequest httpServletRequest){
         return commentService.saveComment(postid, commentRequsetDto, httpServletRequest);
     }
