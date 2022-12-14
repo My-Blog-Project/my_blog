@@ -11,6 +11,7 @@ import com.hanghae.my_blog.jwt.JwtUtil;
 import com.hanghae.my_blog.repository.CommentRepository;
 import com.hanghae.my_blog.repository.PostRepository;
 import com.hanghae.my_blog.repository.UserRepository;
+import com.hanghae.my_blog.util.UserUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,13 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final UserUtil userUtil;
 
     @Transactional
     //댓글 저장하기
-    public CommentResponseDto saveComment(Long postId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
+    public CommentResponseDto saveComment(Long postId, CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest) {
         //로그인 여부 확인
-        User user = tokenChecking(request);
+        User user = userUtil.getUserInfo(httpServletRequest);
         //게시글 저장 여부 확인
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다")
@@ -42,9 +44,9 @@ public class CommentService {
         return new CommentResponseDto(comment.getContent());
     }
     @Transactional
-    public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto commentRequestDto, HttpServletRequest request) {
+    public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest) {
         //로그인 여부 확인
-        User user = tokenChecking(request);
+        User user = userUtil.getUserInfo(httpServletRequest);
         //게시글 존재 여부 확인
         if(!postRepository.existsById(postId)){
             throw new IllegalArgumentException("게시글이 존재하지 않습니다");
@@ -64,9 +66,9 @@ public class CommentService {
     }
     @Transactional
     //댓글 삭제하기
-    public CompleteResponseDto deleteComment(Long postId, Long commentId, HttpServletRequest request) {
+    public CompleteResponseDto deleteComment(Long postId, Long commentId, HttpServletRequest httpServletRequest) {
         //로그인 여부 확인
-        User user = tokenChecking(request);
+        User user = userUtil.getUserInfo(httpServletRequest);
         //게시글 저장 여부 확인
         if(!postRepository.existsById(postId)){
             throw new IllegalArgumentException("게시글이 존재하지 않습니다");
@@ -83,22 +85,5 @@ public class CommentService {
         }
         //삭제 완료 반환
         return new CompleteResponseDto("삭제 완료");
-    }
-    //로그인 여부 확인
-    public User tokenChecking(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException(("사용자가 존재하지 않습니다")
-            ));
-            return user;
-        }throw new IllegalArgumentException("로그인이 필요합니다");
-
     }
 }
