@@ -4,6 +4,7 @@ import com.hanghae.my_blog.dto.*;
 import com.hanghae.my_blog.entity.Comment;
 import com.hanghae.my_blog.entity.Post;
 import com.hanghae.my_blog.entity.User;
+import com.hanghae.my_blog.entity.UserRoleEnum;
 import com.hanghae.my_blog.repository.CommentLikesRepository;
 import com.hanghae.my_blog.repository.CommentRepository;
 import com.hanghae.my_blog.repository.PostLikesRepository;
@@ -77,10 +78,23 @@ public class PostService {
     @Transactional
     public CompleteResponseDto updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
         Post post = checkPost(id);
-        userUtil.getUserInfo(request);
+        User user = userUtil.getUserInfo(request);
+        UserRoleEnum userRoleEnum = user.getRole();
 
-        post.update(requestDto);
-        postRepository.save(post);
+        // 사용자 권한이 User일 경우
+        if(userRoleEnum == UserRoleEnum.USER) {
+            if(post.getId().equals(user.getId())) {
+                post.update(requestDto);
+                postRepository.save(post);
+            } else {
+                throw new IllegalArgumentException("포스트 작성자가 아니라서 삭제할 수 없습니다.");
+            }
+        } else {
+            post.update(requestDto);
+            postRepository.save(post);
+        }
+
+
 
         return new CompleteResponseDto("포스트 수정 완료");
     }
@@ -90,9 +104,19 @@ public class PostService {
     @Transactional
     public CompleteResponseDto deletePost(Long id, HttpServletRequest request) {
         Post post = checkPost(id);
-        userUtil.getUserInfo(request);
+        User user = userUtil.getUserInfo(request);
+        UserRoleEnum userRoleEnum = user.getRole();
 
-        postRepository.delete(post);
+        // 사용자 권한이 User일 경우
+        if(userRoleEnum == UserRoleEnum.USER) {
+            if(post.getId().equals(user.getId())) {
+                postRepository.delete(post);
+            } else {
+                throw new IllegalArgumentException("포스트 작성자가 아니라서 삭제할 수 없습니다.");
+            }
+        } else {
+            postRepository.delete(post);
+        }
 
         return new CompleteResponseDto("포스트 삭제 성공");
 
