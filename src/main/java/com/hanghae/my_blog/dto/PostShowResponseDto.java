@@ -4,6 +4,8 @@ import com.hanghae.my_blog.entity.Post;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class PostShowResponseDto {
@@ -13,6 +15,8 @@ public class PostShowResponseDto {
     private String title;
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
+    private Long likeCount;
+    private List<CommentResponseDto> commentList = new ArrayList<>();
 
     public PostShowResponseDto(Post post) {
         this.num = post.getId();
@@ -21,5 +25,16 @@ public class PostShowResponseDto {
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
+    }
+
+    public PostShowResponseDto(Post post, CommentListResponseDto commentList, Long postLikeCnt) {
+        this.num = post.getId();
+        this.username = post.getUser().getUsername();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.createdAt = post.getCreatedAt();
+        this.modifiedAt = post.getModifiedAt();
+        this.likeCount = postLikeCnt;
+        this.commentList = commentList.getCommentList();
     }
 }

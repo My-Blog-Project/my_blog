@@ -25,7 +25,6 @@ public class CommentLikes {
 	@Column(nullable = false)
 	private boolean likeCheck;
 
-
 	public CommentLikes(User user, Comment comment) {
 		this.user=user;
 		this.comment=comment;

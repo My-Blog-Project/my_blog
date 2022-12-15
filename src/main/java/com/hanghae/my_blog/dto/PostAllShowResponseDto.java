@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 public class PostAllShowResponseDto {
     List<PostResponseDto> postList = new ArrayList<>();
-
-    public void addPost(PostResponseDto responseDto) {postList.add(responseDto);}
+    public void addPost(PostResponseDto responseDto) {
+        postList.add(responseDto);
+    }
 }

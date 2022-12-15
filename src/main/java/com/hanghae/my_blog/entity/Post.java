@@ -31,15 +31,17 @@ public class Post extends Timestamped{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE) // , cascade = CascadeType.REMOVE
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE) // , cascade = CascadeType.REMOVE
     private List<PostLikes> postLikes = new ArrayList<>();
 
-    public Post(PostRequestDto postRequestDto) {  //RequestDto에 의존하기보다 필드로 받아주는 것이 좋다.
+    public Post(PostRequestDto postRequestDto, User user) {  // RequestDto에 의존하기보다 필드로 받아주는 것이 좋다.
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.user = user;
+
     }
 
     public void update(PostRequestDto postRequestDto) {
