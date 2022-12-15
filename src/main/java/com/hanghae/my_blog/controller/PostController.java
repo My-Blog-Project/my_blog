@@ -20,35 +20,35 @@ public class PostController {
     private final PostService postService;
 
     // 전체 게시글 조회
-    @GetMapping("/posts")
+    @GetMapping("/post")
     @ApiOperation(value = "전체 게시글 조회")
     public PostAllShowResponseDto getPosts() {
         return postService.getPosts();
     }
 
     // 게시글 상세 조회
-    @GetMapping("/posts/{id}")
+    @GetMapping("/post/{id}")
     @ApiOperation(value = "게시글 상세 조회")
     public PostShowResponseDto getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 
     // 게시글 작성
-    @PostMapping("/posts")
+    @PostMapping("/post")
     @ApiOperation(value = "게시글 작성")
     public PostCreateResponseDto createPost(@Valid @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
         return postService.createPost(requestDto, request);
     }
 
     // 게시글 수정
-    @PutMapping("/posts/{id}")
+    @PutMapping("/post/{id}")
     @ApiOperation(value = "게시글 수정")
     public CompleteResponseDto updatePost(@PathVariable Long id, @Valid @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
         return postService.updatePost(id, requestDto, request);
     }
 
     // 게시글 삭제
-    @DeleteMapping("/posts/{id}")
+    @DeleteMapping("/post/{id}")
     @ApiOperation(value = "게시글 삭제")
     public CompleteResponseDto deletePost(@PathVariable Long id, HttpServletRequest request) {
         return postService.deletePost(id, request);
