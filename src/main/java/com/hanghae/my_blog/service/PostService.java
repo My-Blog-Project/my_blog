@@ -110,11 +110,13 @@ public class PostService {
         // 사용자 권한이 User일 경우
         if(userRoleEnum == UserRoleEnum.USER) {
             if(post.getId().equals(user.getId())) {
+//                deletePostByPostId(id);
                 postRepository.delete(post);
             } else {
                 throw new IllegalArgumentException("포스트 작성자가 아니라서 삭제할 수 없습니다.");
             }
         } else {
+//            deletePostByPostId(id);
             postRepository.delete(post);
         }
 
@@ -129,5 +131,18 @@ public class PostService {
         );
     }
 
+    // ** 쿼리 줄여주는 JPQL 사용
+    // cascade = CascadeType.REMOVE대신 마지막 삭제 위치부터 하나씩 삭제하기
+    // 1. 포스트 아이디를 받아서 그 포스트 번호에 있는 댓글좋아요 지우기
+    // 2. 댓글 지우기
+    // 3. 포스트 좋아요 지우기
+    private void deletePostByPostId(Long id) {
+        Post post = checkPost(id);
+        List<Long> commentIds = commentRepository.findIdsByPostId(id);
+        commentLikesRepository.deleteByCommentId(commentIds);
+        commentRepository.deleteByCommentId(commentIds);
+        postLikesRepository.deleteByPostId(id);
+        postRepository.delete(post);
+    }
 
 }
