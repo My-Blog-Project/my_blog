@@ -22,12 +22,14 @@ public class CommentController {
 
     //댓글 생성
     @PostMapping("/{postid}")
+    @ApiOperation(value = "댓글 생성")
     public CommentResponseDto saveComment(@PathVariable Long postid, @Valid @RequestBody CommentRequestDto commentRequsetDto, HttpServletRequest httpServletRequest){
 
         return commentService.saveComment(postid, commentRequsetDto, httpServletRequest);
     }
     //댓글 수정
     @PutMapping("/{postid}/{commentid}")
+    @ApiOperation(value = "댓글 수정")
     public CommentResponseDto updateComment(@PathVariable Long postid, @PathVariable Long commentid, @Valid @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest){
         return commentService.updateComment(postid, commentid, commentRequestDto, httpServletRequest);
     }

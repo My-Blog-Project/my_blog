@@ -83,7 +83,7 @@ public class PostService {
 
         // 사용자 권한이 User일 경우
         if(userRoleEnum == UserRoleEnum.USER) {
-            if(post.getId().equals(user.getId())) {
+            if(post.getUser().getUsername().equals(user.getUsername())) {
                 post.update(requestDto);
                 postRepository.save(post);
             } else {
@@ -93,9 +93,6 @@ public class PostService {
             post.update(requestDto);
             postRepository.save(post);
         }
-
-
-
         return new CompleteResponseDto("포스트 수정 완료");
     }
 
@@ -109,7 +106,7 @@ public class PostService {
 
         // 사용자 권한이 User일 경우
         if(userRoleEnum == UserRoleEnum.USER) {
-            if(post.getId().equals(user.getId())) {
+            if(post.getUser().getUsername().equals(user.getUsername())) {
 //                deletePostByPostId(id);
                 postRepository.delete(post);
             } else {
@@ -121,7 +118,6 @@ public class PostService {
         }
 
         return new CompleteResponseDto("포스트 삭제 성공");
-
     }
 
     // 포스트 번호를 체크해서 번호가 없으면 에러메세지 출력
