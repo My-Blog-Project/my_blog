@@ -76,10 +76,11 @@ public class PostService {
 
     // 포스트 수정
     @Transactional
-    public CompleteResponseDto updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+    public PostUpdateResponseDto updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
         Post post = checkPost(id);
         User user = userUtil.getUserInfo(request);
         UserRoleEnum userRoleEnum = user.getRole();
+        Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
 
         // 사용자 권한이 User일 경우
         if(userRoleEnum == UserRoleEnum.USER) {
@@ -93,7 +94,7 @@ public class PostService {
             post.update(requestDto);
             postRepository.save(post);
         }
-        return new CompleteResponseDto("포스트 수정 완료");
+        return new PostUpdateResponseDto(post, postLikeCnt);
     }
 
 

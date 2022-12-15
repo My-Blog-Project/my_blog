@@ -43,7 +43,7 @@ public class PostController {
     // 게시글 수정
     @PutMapping("/post/{id}")
     @ApiOperation(value = "게시글 수정")
-    public CompleteResponseDto updatePost(@PathVariable Long id, @Valid @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+    public PostUpdateResponseDto updatePost(@PathVariable Long id, @Valid @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
         return postService.updatePost(id, requestDto, request);
     }
 
