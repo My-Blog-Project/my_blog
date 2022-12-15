@@ -36,7 +36,7 @@ public class PostService {
             // 게시글 좋아요 count
             Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
             CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
-            List<Comment> comments = commentRepository.findByPost_IdOrderByCreatedAtDesc(post.getId());
+            List<Comment> comments = commentRepository.findAllByPostIdWithUser(post.getId());
             for(Comment comment : comments) {
                 // 댓글 좋아요 count
                 Long commentLikeCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
@@ -54,7 +54,7 @@ public class PostService {
         Post post = checkPost(id);
         Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
         CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
-        List<Comment> comments = commentRepository.findByPost_IdOrderByCreatedAtDesc(post.getId());
+        List<Comment> comments = commentRepository.findAllByPostIdWithUser(post.getId());
         for(Comment comment : comments) {
             Long commentLikeCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
             commentListRequestDto.addComment(new CommentResponseDto(comment, commentLikeCnt));
