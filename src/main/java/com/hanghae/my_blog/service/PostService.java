@@ -30,8 +30,8 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostAllShowResponseDto getPosts() {
         PostAllShowResponseDto postAllShowResponseDto = new PostAllShowResponseDto();
-
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
+
         for(Post post : posts) {
             // 게시글 좋아요 count
             Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
@@ -55,6 +55,7 @@ public class PostService {
         Long postLikeCnt = postLikesRepository.countByPostAndLikeCheckIsTrue(post);
         CommentListResponseDto commentListRequestDto = new CommentListResponseDto();
         List<Comment> comments = commentRepository.findAllByPostIdWithUser(post.getId());
+
         for(Comment comment : comments) {
             Long commentLikeCnt = commentLikesRepository.countByCommentAndLikeCheckIsTrue(comment);
             commentListRequestDto.addComment(new CommentResponseDto(comment, commentLikeCnt));
@@ -96,7 +97,6 @@ public class PostService {
         }
         return new PostUpdateResponseDto(post, postLikeCnt);
     }
-
 
     // 포스트 삭제
     @Transactional

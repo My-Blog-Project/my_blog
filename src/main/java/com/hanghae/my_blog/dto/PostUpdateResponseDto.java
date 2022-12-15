@@ -16,7 +16,6 @@ public class PostUpdateResponseDto {
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
     private Long likeCount;
-    private List<CommentResponseDto> commentList = new ArrayList<>();
 
     public PostUpdateResponseDto(Post post, Long postLikeCnt) {
         this.num = post.getId();
