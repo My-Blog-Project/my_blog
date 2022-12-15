@@ -23,14 +23,14 @@ public class UserController {
 
 
     @PostMapping("/signup")
-//    @ApiOperation(value = "회원가입")
+    @ApiOperation(value = "회원가입")
     public CompleteResponseDto signup(@Valid @RequestBody SignupRequestDto requestDto) {
         return userService.signup(requestDto);
     }
 
 
     @PostMapping("/login")
-//    @ApiOperation(value = "로그인")
+    @ApiOperation(value = "로그인")
     public CompleteResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         return userService.login(loginRequestDto, response);
     }

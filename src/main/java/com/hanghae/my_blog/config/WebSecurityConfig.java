@@ -37,8 +37,15 @@ public class WebSecurityConfig {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		http.authorizeRequests()
+
 			.antMatchers("/", "/api/auth/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+			.antMatchers(HttpMethod.POST,"/api/loggin").permitAll()
+
+			.antMatchers(HttpMethod.GET,"/swagger-resources/**").permitAll()
+			.antMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
+			.antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
 			.anyRequest().authenticated()
 			.and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
