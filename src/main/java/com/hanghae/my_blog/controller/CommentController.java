@@ -21,22 +21,22 @@ public class CommentController {
     private final CommentService commentService;
 
     //댓글 생성
-    @PostMapping("/{postid}")
-    @ApiOperation(value = "댓글 생성")
-    public CommentResponseDto saveComment(@PathVariable Long postid, @Valid @RequestBody CommentRequestDto commentRequsetDto, HttpServletRequest httpServletRequest){
+    @PostMapping("/{postId}")
+    @ApiOperation(value = "댓글 작성")
+    public CommentResponseDto saveComment(@PathVariable Long postId, @Valid @RequestBody CommentRequestDto commentRequsetDto, HttpServletRequest httpServletRequest){
 
-        return commentService.saveComment(postid, commentRequsetDto, httpServletRequest);
+        return commentService.saveComment(postId, commentRequsetDto, httpServletRequest);
     }
     //댓글 수정
-    @PutMapping("/{postid}/{commentid}")
+    @PutMapping("/{postId}/{commentId}")
     @ApiOperation(value = "댓글 수정")
-    public CommentResponseDto updateComment(@PathVariable Long postid, @PathVariable Long commentid, @Valid @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest){
-        return commentService.updateComment(postid, commentid, commentRequestDto, httpServletRequest);
+    public CommentResponseDto updateComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest){
+        return commentService.updateComment(postId, commentId, commentRequestDto, httpServletRequest);
     }
     //댓글 삭제
-    @DeleteMapping("/{postid}/{commentid}")
+    @DeleteMapping("/{postId}/{commentId}")
     @ApiOperation(value = "댓글 삭제")
-    public CompleteResponseDto deleteComment(@PathVariable Long postid, @PathVariable Long commentid, HttpServletRequest httpServletRequest) {
-        return commentService.deleteComment(postid, commentid, httpServletRequest);
+    public CompleteResponseDto deleteComment(@PathVariable Long postId, @PathVariable Long commentId, HttpServletRequest httpServletRequest) {
+        return commentService.deleteComment(postId, commentId, httpServletRequest);
     }
 }
