@@ -18,8 +18,8 @@
 * Spring Security + JWT
 * AWS RDS(MySQL)  
   
-## 👀API Document
-[API Docs](http://13.124.137.113/swagger-ui/index.html)
+## 👀API
+[API Document](http://13.124.137.113/swagger-ui/index.html)
 <img width="1317" alt="스크린샷 2022-12-15 15 15 38" src="https://user-images.githubusercontent.com/65327103/207789080-41dbeb19-79f9-47c8-be85-37e0e4533f86.png">
 
 
